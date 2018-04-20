@@ -29,22 +29,24 @@ clientConfig = {
         ]
     },
     output: {
-        path: path.resolve(__dirname, '../dist'),
+        path: path.resolve(__dirname, '../dist/client'),
         filename: '[name].[chunkhash:8].js',
+        chunkFilename: 'chunk.[name].[chunkhash:8].js',
         publicPath: '/'
     },
     module: {
         loaders: [{
             test: /\.js$/,
-            exclude: /(node_modules)/,
+            exclude: /node_modules/,
             loader: 'babel',
             query: {
                 presets: ['es2015', 'react', 'stage-0'],
-                plugins: ['transform-runtime']
+                plugins: ['transform-runtime', 'add-module-exports'],
+                cacheDirectory: true
             }
         }, {
             test: /\.scss$/,
-            loader: ExtractTextPlugin.extract('style', 'css?modules&camelCase&localIdentName=[hash:base64:8]!postcss!sass')
+            loader: ExtractTextPlugin.extract('style', 'css?modules&camelCase&importLoaders=1&localIdentName=[hash:base64:8]!postcss!sass')
         }, {
             test: /\.(jpg|png|gif|webp)$/,
             loader: 'url?limit=8000'
@@ -71,11 +73,11 @@ clientConfig = {
         }),
         new webpack.DefinePlugin({'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)}),
         new HtmlWebpackPlugin({
-            filename: '../views/prod/index.html',
+            filename: '../../views/prod/index.html',
             template: './views/tpl/index.tpl.html',
             chunksSortMode: 'none'
         }),
-        new ExtractTextPlugin('[name].[contenthash:8].css')
+        new ExtractTextPlugin('[name].[contenthash:8].css', {allChunks: true})
     ]
 }
 
@@ -83,8 +85,9 @@ serverConfig = {
     context: path.resolve(__dirname, '..'),
     entry: {server: './server/server.prod'},
     output: {
-        path: path.resolve(__dirname, '..'),
-        filename: '[name].js'
+        path: path.resolve(__dirname, '../dist/server'),
+        filename: '[name].js',
+        chunkFilename: 'chunk.[name].js'
     },
     target: 'node',
     node: {
@@ -96,11 +99,15 @@ serverConfig = {
             test: /\.js$/,
             exclude: /node_modules/,
             loader: 'babel',
-            query: {presets: ['es2015', 'react', 'stage-0']}
+            query: {
+                presets: ['es2015', 'react', 'stage-0'],
+                plugins: ['add-module-exports'],
+                cacheDirectory: true
+            }
         }, {
             test: /\.scss$/,
             loaders: [
-                'css/locals?modules&camelCase&localIdentName=[hash:base64:8]',
+                'css/locals?modules&camelCase&importLoaders=1&localIdentName=[hash:base64:8]',
                 'sass'
             ]
         }, {

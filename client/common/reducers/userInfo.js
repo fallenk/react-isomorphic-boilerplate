@@ -1,10 +1,14 @@
-import {REPLACE_USER_INFO} from '../constants/ActionTypes'
+import types from '../constants/actionTypes'
 
-export default function userInfo(state = null, action) {
+function userInfo(state = null, action) {
     switch (action.type) {
-        case REPLACE_USER_INFO:
+        case types.REPLACE_USER_INFO:
             return action.userInfo
+        case types.CLEAR_USER_INFO:
+            return null
         default:
             return state
     }
 }
+
+export default userInfo

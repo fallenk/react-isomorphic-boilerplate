@@ -20,8 +20,9 @@ module.exports = {
         ]
     },
     output: {
-        path: path.resolve(__dirname, '../dist'),
+        path: path.resolve(__dirname, '../dist/client'),
         filename: '[name].js',
+        chunkFilename: 'chunk.[name].js',
         publicPath: '/'
     },
     module: {
@@ -31,13 +32,14 @@ module.exports = {
             loader: 'babel',
             query: {
                 presets: ['es2015', 'react', 'stage-0', 'react-hmre'],
-                plugins: ['transform-runtime']
+                plugins: ['transform-runtime', 'add-module-exports'],
+                cacheDirectory: true
             }
         }, {
             test: /\.scss$/,
             loaders: [
                 'style',
-                'css?modules&camelCase&localIdentName=[name]__[local]__[hash:base64:8]',
+                'css?modules&camelCase&importLoaders=1&localIdentName=[name]__[local]__[hash:base64:8]',
                 'sass'
             ]
         }, {
@@ -54,7 +56,6 @@ module.exports = {
     resolve: {extensions: ['', '.js', '.json', '.scss']},
     plugins: [
         new webpack.optimize.OccurenceOrderPlugin(),
-        new webpack.optimize.DedupePlugin(),
         new webpack.optimize.CommonsChunkPlugin({
             names: ['vendor', 'manifest'],
             filename: '[name].js'

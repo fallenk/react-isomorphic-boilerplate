@@ -3,17 +3,17 @@ import SectionMain from '../components/SectionMain'
 import styles from '../sass/App'
 
 class App extends Component {
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
     }
 
     render() {
         const {userInfo, actions} = this.props
 
         return (
-            <section className={styles.app}>
+            <div className={styles.app}>
                 <SectionMain userInfo={userInfo} actions={actions}></SectionMain>
-            </section>
+            </div>
         )
     }
 }
